@@ -1,0 +1,4 @@
+fr/alphadesnoc/event/enums/EquipMethod.class
+fr/alphadesnoc/event/enums/ArmorType.class
+fr/alphadesnoc/event/listeners/ArmorListeners.class
+fr/alphadesnoc/event/events/ArmorEvent.class
