@@ -2,7 +2,7 @@ package fr.alphadesnoc.event.listeners;
 
 
 import fr.alphadesnoc.event.enums.ArmorType;
-import fr.alphadesnoc.event.events.ArmorEvent;
+import fr.alphadesnoc.event.events.PlayerChangeArmorEvent;
 import fr.alphadesnoc.event.enums.EquipMethod;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -61,9 +61,9 @@ public class ArmorListeners implements Listener {
                         && (equipping ? isAirOrNull(e.getWhoClicked().getInventory().getChestplate()) : !isAirOrNull(e.getWhoClicked().getInventory().getChestplate())) || newArmorType.equals(ArmorType.LEGS)
                         && (equipping ? isAirOrNull(e.getWhoClicked().getInventory().getLeggings()) : !isAirOrNull(e.getWhoClicked().getInventory().getLeggings())) || newArmorType.equals(ArmorType.BOOTS)
                         && (equipping ? isAirOrNull(e.getWhoClicked().getInventory().getBoots()) : !isAirOrNull(e.getWhoClicked().getInventory().getBoots()))){
-                    ArmorEvent armorEvent = new ArmorEvent((Player) e.getWhoClicked(), EquipMethod.SHIFT_CLICK, newArmorType, equipping ? null : e.getCurrentItem(), equipping ? e.getCurrentItem() : null);
-                    Bukkit.getServer().getPluginManager().callEvent(armorEvent);
-                    if(armorEvent.isCancelled()) e.setCancelled(true);
+                    PlayerChangeArmorEvent playerChangeArmorEvent = new PlayerChangeArmorEvent((Player) e.getWhoClicked(), EquipMethod.SHIFT_CLICK, newArmorType, equipping ? null : e.getCurrentItem(), equipping ? e.getCurrentItem() : null);
+                    Bukkit.getServer().getPluginManager().callEvent(playerChangeArmorEvent);
+                    if(playerChangeArmorEvent.isCancelled()) e.setCancelled(true);
                 }
             }
         }
@@ -92,9 +92,9 @@ public class ArmorListeners implements Listener {
                     && e.getRawSlot() == newArmorType.getSlotNumber()) {
                 EquipMethod method = EquipMethod.PICK_DROP;
                 if (e.getAction().equals(InventoryAction.HOTBAR_SWAP) || numberkey) method = EquipMethod.HOTBAR_SWAP;
-                ArmorEvent armorEvent = new ArmorEvent((Player) e.getWhoClicked(), method, newArmorType, oldArmorPiece, newArmorPiece);
-                Bukkit.getServer().getPluginManager().callEvent(armorEvent);
-                if (armorEvent.isCancelled()) e.setCancelled(true);
+                PlayerChangeArmorEvent playerChangeArmorEvent = new PlayerChangeArmorEvent((Player) e.getWhoClicked(), method, newArmorType, oldArmorPiece, newArmorPiece);
+                Bukkit.getServer().getPluginManager().callEvent(playerChangeArmorEvent);
+                if (playerChangeArmorEvent.isCancelled()) e.setCancelled(true);
             }
         }
     }
@@ -120,9 +120,9 @@ public class ArmorListeners implements Listener {
                         && isAirOrNull(e.getPlayer().getInventory().getChestplate()) || newArmorType.equals(ArmorType.LEGS)
                         && isAirOrNull(e.getPlayer().getInventory().getLeggings()) || newArmorType.equals(ArmorType.BOOTS)
                         && isAirOrNull(e.getPlayer().getInventory().getBoots())){
-                    ArmorEvent armorEvent = new ArmorEvent(e.getPlayer(), EquipMethod.HOTBAR, ArmorType.match(e.getItem()), null, e.getItem());
-                    Bukkit.getServer().getPluginManager().callEvent(armorEvent);
-                    if (armorEvent.isCancelled()){
+                    PlayerChangeArmorEvent playerChangeArmorEvent = new PlayerChangeArmorEvent(e.getPlayer(), EquipMethod.HOTBAR, ArmorType.match(e.getItem()), null, e.getItem());
+                    Bukkit.getServer().getPluginManager().callEvent(playerChangeArmorEvent);
+                    if (playerChangeArmorEvent.isCancelled()){
                         e.setCancelled(true);
                         player.updateInventory();
                     }
@@ -136,9 +136,9 @@ public class ArmorListeners implements Listener {
         ArmorType type = ArmorType.match(event.getOldCursor());
         if (event.getRawSlots().isEmpty()) return;
         if (type != null && type.getSlotNumber() == event.getRawSlots().stream().findFirst().orElse(0)){
-            ArmorEvent armorEvent = new ArmorEvent((Player) event.getWhoClicked(), EquipMethod.DRAG, type, null, event.getOldCursor());
-            Bukkit.getServer().getPluginManager().callEvent(armorEvent);
-            if (armorEvent.isCancelled()){
+            PlayerChangeArmorEvent playerChangeArmorEvent = new PlayerChangeArmorEvent((Player) event.getWhoClicked(), EquipMethod.DRAG, type, null, event.getOldCursor());
+            Bukkit.getServer().getPluginManager().callEvent(playerChangeArmorEvent);
+            if (playerChangeArmorEvent.isCancelled()){
                 event.setResult(Event.Result.DENY);
                 event.setCancelled(true);
             }
@@ -150,9 +150,9 @@ public class ArmorListeners implements Listener {
         ArmorType type = ArmorType.match(e.getBrokenItem());
         if (type != null){
             Player p = e.getPlayer();
-            ArmorEvent armorEvent = new ArmorEvent(p, EquipMethod.BROKE, type, e.getBrokenItem(), null);
-            Bukkit.getServer().getPluginManager().callEvent(armorEvent);
-            if (armorEvent.isCancelled()){
+            PlayerChangeArmorEvent playerChangeArmorEvent = new PlayerChangeArmorEvent(p, EquipMethod.BROKE, type, e.getBrokenItem(), null);
+            Bukkit.getServer().getPluginManager().callEvent(playerChangeArmorEvent);
+            if (playerChangeArmorEvent.isCancelled()){
                 ItemStack i = e.getBrokenItem().clone();
                 i.setAmount(1);
                 i.setDurability((short) (i.getDurability() - 1));
@@ -175,7 +175,7 @@ public class ArmorListeners implements Listener {
         if (e.getKeepInventory()) return;
         for (ItemStack i : p.getInventory().getArmorContents()){
             if (!isAirOrNull(i)){
-                Bukkit.getServer().getPluginManager().callEvent(new ArmorEvent(p, EquipMethod.DEATH, ArmorType.match(i), i, null));
+                Bukkit.getServer().getPluginManager().callEvent(new PlayerChangeArmorEvent(p, EquipMethod.DEATH, ArmorType.match(i), i, null));
             }
         }
     }
