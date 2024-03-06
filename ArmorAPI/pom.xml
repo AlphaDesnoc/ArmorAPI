@@ -62,11 +62,11 @@
                     <relocations>
                         <relocation>
                             <pattern>fr.alphadesnoc.listener</pattern>
-                            <shadedPattern>YOUR PACKAGE WHERE THE API SHOULD END UP</shadedPattern>
+                            <shadedPattern>fr.alphadesnoc.listener</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>fr.alphadesnoc.event</pattern>
-                            <shadedPattern>YOUR PACKAGE WHERE THE API SHOULD END UP</shadedPattern>
+                            <shadedPattern>fr.alphadesnoc.event</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
