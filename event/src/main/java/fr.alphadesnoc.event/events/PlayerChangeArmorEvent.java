@@ -9,8 +9,11 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
+ * Event called when a player changes their armor.
+ * This can be triggered by equipping, unequipping, or altering armor through various means.
+ *
  * @author AlphaDesnoc
- * @since Feb 28, 2023
+ * @since Mar 1, 2024
  */
 public final class PlayerChangeArmorEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
@@ -21,12 +24,15 @@ public final class PlayerChangeArmorEvent extends PlayerEvent implements Cancell
     private ItemStack newArmorPiece;
 
     /**
-     * @param player The player who put on / removed the armor.
-     * @param type The ArmorType of the armor added
-     * @param oldArmorPiece The ItemStack of the armor removed.
-     * @param newArmorPiece The ItemStack of the armor added.
+     * Constructs a new PlayerChangeArmorEvent.
+     *
+     * @param player        The player involved in this event.
+     * @param equipType     The method used to change the armor.
+     * @param type          The type of armor that was changed.
+     * @param oldArmorPiece The armor piece removed, or null if none was removed.
+     * @param newArmorPiece The armor piece added, or null if none was added.
      */
-    public PlayerChangeArmorEvent(final Player player, final EquipMethod equipType, final ArmorType type, final ItemStack oldArmorPiece, final ItemStack newArmorPiece){
+    public PlayerChangeArmorEvent(final Player player, final EquipMethod equipType, final ArmorType type, final ItemStack oldArmorPiece, final ItemStack newArmorPiece) {
         super(player);
         this.equipType = equipType;
         this.type = type;
@@ -35,72 +41,96 @@ public final class PlayerChangeArmorEvent extends PlayerEvent implements Cancell
     }
 
     /**
-     * Gets a list of handlers handling this event.
+     * Gets the list of handlers for this event.
      *
-     * @return A list of handlers handling this event.
+     * @return The list of handlers for this event.
      */
-    public static HandlerList getHandlerList(){
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
     /**
-     * Gets a list of handlers handling this event.
+     * Gets the list of handlers for this event.
      *
-     * @return A list of handlers handling this event.
+     * @return The list of handlers for this event.
      */
     @Override
-    public final HandlerList getHandlers(){
+    public HandlerList getHandlers() {
         return handlers;
     }
 
     /**
-     * Sets if this event should be cancelled.
+     * Determines if this event is cancelled.
      *
-     * @param cancel If this event should be cancelled.
+     * @return true if this event is cancelled, false otherwise.
      */
-    public final void setCancelled(final boolean cancel){
+    @Override
+    public boolean isCancelled() {
+        return cancel;
+    }
+
+    /**
+     * Sets the cancellation state of this event. A cancelled event will not be executed in the server,
+     * but will still pass to other plugins.
+     *
+     * @param cancel true if you wish to cancel this event.
+     */
+    @Override
+    public void setCancelled(final boolean cancel) {
         this.cancel = cancel;
     }
 
     /**
-     * Gets if this event is cancelled.
+     * Gets the type of armor that was changed.
      *
-     * @return If this event is cancelled
+     * @return The ArmorType of the changed armor.
      */
-    public final boolean isCancelled(){
-        return cancel;
-    }
-
-    public final ArmorType getType(){
+    public ArmorType getType() {
         return type;
     }
 
     /**
-     * Returns the last equipped armor piece, could be a piece of armor, or null
+     * Gets the old armor piece, if any, that was removed during the armor change.
+     *
+     * @return The ItemStack of the removed armor piece, or null if none was removed.
      */
-    public final ItemStack getOldArmorPiece(){
+    public ItemStack getOldArmorPiece() {
         return oldArmorPiece;
     }
 
-    public final void setOldArmorPiece(final ItemStack oldArmorPiece){
+    /**
+     * Sets the old armor piece that was removed.
+     *
+     * @param oldArmorPiece The ItemStack of the armor removed.
+     */
+    public void setOldArmorPiece(final ItemStack oldArmorPiece) {
         this.oldArmorPiece = oldArmorPiece;
     }
 
     /**
-     * Returns the newly equipped armor, could be a piece of armor, or null
+     * Gets the new armor piece, if any, that was added during the armor change.
+     *
+     * @return The ItemStack of the added armor piece, or null if none was added.
      */
-    public final ItemStack getNewArmorPiece(){
+    public ItemStack getNewArmorPiece() {
         return newArmorPiece;
     }
 
-    public final void setNewArmorPiece(final ItemStack newArmorPiece){
+    /**
+     * Sets the new armor piece that was added.
+     *
+     * @param newArmorPiece The ItemStack of the armor added.
+     */
+    public void setNewArmorPiece(final ItemStack newArmorPiece) {
         this.newArmorPiece = newArmorPiece;
     }
 
     /**
-     * Returns the method used to equip or unequip a piece of Armor
+     * Gets the method used to change the armor.
+     *
+     * @return The EquipMethod representing how the armor was changed.
      */
-    public EquipMethod getMethod(){
+    public EquipMethod getMethod() {
         return equipType;
     }
 }

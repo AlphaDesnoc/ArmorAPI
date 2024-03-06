@@ -1,9 +1,9 @@
 package fr.alphadesnoc.core;
 
+import fr.alphadesnoc.event.listeners.ArmorListeners;
+import fr.alphadesnoc.listener.DispenseArmorListener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import fr.alphadesnoc.event.listeners.ArmorListeners;
-import fr.alphadesnoc.listener.DispenceArmorListener;
 
 /**
  * @author AlphaDesnoc
@@ -11,20 +11,18 @@ import fr.alphadesnoc.listener.DispenceArmorListener;
  */
 public final class ArmorAPI extends JavaPlugin {
 
-    private PluginManager pm;
 
     @Override
     public void onEnable() {
-        pm = getServer().getPluginManager();
+        PluginManager pm = getServer().getPluginManager();
         saveDefaultConfig();
 
         pm.registerEvents(new ArmorListeners(getConfig().getStringList("blockedMats")), this);
         try {
-            //For 1.13+
             Class.forName("org.bukkit.event.block.BlockDispenseArmorEvent");
-            pm.registerEvents(new DispenceArmorListener(), this);
+            pm.registerEvents(new DispenseArmorListener(), this);
+        } catch (ClassNotFoundException ignored) {
         }
-        catch (Exception ignored) {}
     }
 
 }
